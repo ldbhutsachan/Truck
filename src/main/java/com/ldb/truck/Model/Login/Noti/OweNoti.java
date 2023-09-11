@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotiInvoice {
-    private Double invoiceStatus;
-
+public class OweNoti {
+   private Double total_owe;
 }

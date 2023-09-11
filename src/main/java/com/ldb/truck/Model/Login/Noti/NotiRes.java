@@ -14,7 +14,17 @@ import java.util.List;
 public class NotiRes {
     private String status;
     private String message;
-    private List<NotiDetails> notiDetails;
-    private List<NotiInvoice> notiInvoice;
-    private List<NotiPerFormace> notiPerForMance;
+    private String totalRow;
+
+    private String notiDetails;
+
+    private String notiInvoice;
+
+    private String  notiPerForMance;
+
+    private String totalOwe;
+//    private List<NotiDetails> notiDetails;
+//    private List<NotiInvoice> notiInvoice;
+//    private List<NotiPerFormace> notiPerForMance;
+//    private List<OweNoti>  totalOwe;
 }

@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotiDetails {
-    private String detailsStatus;
+    private Double detailsStatus;
 
 }

@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class NotiPerFormace
 {
-    private String perStatus;
+    private Double perStatus;
 }

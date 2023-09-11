@@ -502,11 +502,9 @@ public class Controller {
         }
         return result;
     }
-
     @CrossOrigin(origins = "*")
     @PostMapping("/DeleteTruck")
     public TruckRes DeleteTruck (@RequestBody TruckReq truckReq){
-
         TruckRes result = new TruckRes();
 
         try {

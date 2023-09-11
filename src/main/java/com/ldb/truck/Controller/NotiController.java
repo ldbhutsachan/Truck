@@ -15,12 +15,26 @@ public class NotiController {
     private static final Logger log = LogManager.getLogger(NotiController.class);
     @Autowired
     NotiService notiService;
+//    @CrossOrigin(origins = "*")
+//    @PostMapping("/getNoti.service")
+//    public NotiRes getNoti(){
+//        NotiRes result = new NotiRes();
+//        try{
+//            result = notiService.listNoti();
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            result.setStatus("01");
+//            result.setMessage("exception");
+//        }
+//        return  result;
+//    }
+    //===========>show noti tab 3 <==========================================
     @CrossOrigin(origins = "*")
-    @PostMapping("/getNoti.service")
-    public NotiRes getNoti(){
+    @PostMapping("/getNotiTab3.service")
+    public NotiRes getNotiTab3(){
         NotiRes result = new NotiRes();
         try{
-            result = notiService.listNoti();
+            result = notiService.listNotiTap3();
         }catch (Exception e){
             e.printStackTrace();
             result.setStatus("01");

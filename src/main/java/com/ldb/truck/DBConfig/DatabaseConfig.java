@@ -23,8 +23,6 @@ public class DatabaseConfig {
     public JdbcTemplate EBankJdbcTemplate(DataSource EBankJdbcTemplate) {
         return new JdbcTemplate(EBankJdbcTemplate);
     }
-
-
     //----
 //    @Bean
 //    public DataSource dataSource() {

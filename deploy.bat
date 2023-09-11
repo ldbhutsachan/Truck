@@ -10,7 +10,7 @@ set VERSION=latest
 
 echo %VERSION%
 
-set IMAGE=registry.ldblao.la/mobile-dev/truck-ldb
+set IMAGE=khounkham/logistics-api
 
 echo Building image: %IMAGE%:%VERSION%
 

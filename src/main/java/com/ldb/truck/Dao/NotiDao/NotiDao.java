@@ -2,6 +2,7 @@ package com.ldb.truck.Dao.NotiDao;
 import com.ldb.truck.Model.Login.Noti.NotiDetails;
 import com.ldb.truck.Model.Login.Noti.NotiInvoice;
 import com.ldb.truck.Model.Login.Noti.NotiPerFormace;
+import com.ldb.truck.Model.Login.Noti.OweNoti;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class NotiDao implements NotiDaoIn{
                 @Override
                 public NotiDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
                     NotiDetails tr =new NotiDetails();
-                    tr.setDetailsStatus(rs.getString("DETAILSTATUS"));
+                    tr.setDetailsStatus(rs.getDouble("DETAILSTATUS"));
                     return tr;
                 }
             });
@@ -47,7 +48,7 @@ public class NotiDao implements NotiDaoIn{
                 @Override
                 public NotiInvoice mapRow(ResultSet rs, int rowNum) throws SQLException {
                     NotiInvoice tr =new NotiInvoice();
-                    tr.setInvoiceStatus(rs.getString("inVoiceStatus"));
+                    tr.setInvoiceStatus(rs.getDouble("inVoiceStatus"));
                     return tr;
                 }
             });
@@ -64,7 +65,7 @@ public class NotiDao implements NotiDaoIn{
                 @Override
                 public NotiPerFormace mapRow(ResultSet rs, int rowNum) throws SQLException {
                     NotiPerFormace tr =new NotiPerFormace();
-                    tr.setPerStatus(rs.getString("PERSTATUS"));
+                    tr.setPerStatus(rs.getDouble("PERSTATUS"));
                     return tr;
                 }
             });
@@ -73,4 +74,78 @@ public class NotiDao implements NotiDaoIn{
         }
         return null;
     }
+
+    @Override
+    public List<NotiDetails> notiDetal() {
+        try {
+            SQL="select COUNT(*) AS TOTAL_DETAILS from TB_DETAILS where D_STATUS='N'";
+            return EBankJdbcTemplate.query(SQL, new RowMapper<NotiDetails>() {
+                @Override
+                public NotiDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    NotiDetails tr =new NotiDetails();
+                    tr.setDetailsStatus(rs.getDouble("TOTAL_DETAILS"));
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<NotiInvoice> Invoice() {
+        try {
+            SQL="select COUNT(*) AS TOTAL_INVOICE from INVOICE  where STATUS='N'";
+            return EBankJdbcTemplate.query(SQL, new RowMapper<NotiInvoice>() {
+                @Override
+                public NotiInvoice mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    NotiInvoice tr =new NotiInvoice();
+                    tr.setInvoiceStatus(rs.getDouble("TOTAL_INVOICE"));
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<NotiPerFormace> noPer() {
+        try {
+            SQL="SELECT COUNT(*) AS TOTAL_PERFORMANCE FROM TB_PERFORMANCE WHERE  STATUS='N'";
+            return EBankJdbcTemplate.query(SQL, new RowMapper<NotiPerFormace>() {
+                @Override
+                public NotiPerFormace mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    NotiPerFormace tr =new NotiPerFormace();
+                    tr.setPerStatus(rs.getDouble("TOTAL_PERFORMANCE"));
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<OweNoti> oweNoti() {
+        try {
+            SQL="SELECT COUNT(*) AS TOTAL_OWE FROM OWE where PAY_STATUS='N'";
+            return EBankJdbcTemplate.query(SQL, new RowMapper<OweNoti>() {
+                @Override
+                public OweNoti mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    OweNoti tr =new OweNoti();
+                    tr.setTotal_owe(rs.getDouble("TOTAL_OWE"));
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    //==================================>show noti in box<===========================================================
+
 }
