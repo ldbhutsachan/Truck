@@ -1,8 +1,5 @@
 package com.ldb.truck.Dao.NotiDao;
-import com.ldb.truck.Model.Login.Noti.NotiDetails;
-import com.ldb.truck.Model.Login.Noti.NotiInvoice;
-import com.ldb.truck.Model.Login.Noti.NotiPerFormace;
-import com.ldb.truck.Model.Login.Noti.OweNoti;
+import com.ldb.truck.Model.Login.Noti.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,12 +129,30 @@ public class NotiDao implements NotiDaoIn{
     @Override
     public List<OweNoti> oweNoti() {
         try {
-            SQL="SELECT COUNT(*) AS TOTAL_OWE FROM OWE where PAY_STATUS='N'";
+            SQL="SELECT COUNT(*) AS TOTAL_OWE FROM PAYMENT where PAY_STATUS='O'";
             return EBankJdbcTemplate.query(SQL, new RowMapper<OweNoti>() {
                 @Override
                 public OweNoti mapRow(ResultSet rs, int rowNum) throws SQLException {
                     OweNoti tr =new OweNoti();
                     tr.setTotal_owe(rs.getDouble("TOTAL_OWE"));
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<notiPay> notiPayList() {
+        try {
+            SQL="select COUNT(*) AS PAY_STATUS  from PAYMENT where PAY_STATUS='N'";
+            return EBankJdbcTemplate.query(SQL, new RowMapper<notiPay>() {
+                @Override
+                public notiPay mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    notiPay tr =new notiPay();
+                    tr.setTotal_pay(rs.getDouble("PAY_STATUS"));
                     return tr;
                 }
             });

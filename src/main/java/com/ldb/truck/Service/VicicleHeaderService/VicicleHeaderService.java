@@ -2,6 +2,9 @@ package com.ldb.truck.Service.VicicleHeaderService;
 import com.ldb.truck.Dao.VicicleHeaderDao.VicicleHeaderDao;
 import com.ldb.truck.Dao.VicicleHeaderDao.VicicleHeaderServiceDao;
 import com.ldb.truck.Model.Login.Report.ReportAllReq;
+import com.ldb.truck.Model.Login.Report.ReportHeader;
+import com.ldb.truck.Model.Login.Report.ReportHeaderReq;
+import com.ldb.truck.Model.Login.Report.ReportHeaderRes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,6 +138,23 @@ public VicicleHeaderRes updateVicicleHeader(VicicleHeaderReq vicicleHeaderReq){
         List<VicicleHeader> ListData = new ArrayList<>();
         try {
             ListData  = vicicleHeaderDao.ReportHistoryHeader(vicicleHeaderReq);
+            result.setData(ListData);
+            result.setMessage("Success");
+            result.setStatus("00");
+        }catch (Exception e ){
+            e.printStackTrace();
+            result.setMessage("data not found");
+            result.setStatus("01");
+            return result;
+        }
+        return result;
+    }
+    //List<ReportHeader> listReportHeader(ReportHeaderReq reportHeaderReq)
+    public ReportHeaderRes listReportHeader(ReportHeaderReq vicicleHeaderReq){
+        ReportHeaderRes result = new ReportHeaderRes();
+        List<ReportHeader> ListData = new ArrayList<>();
+        try {
+            ListData  = vicicleHeaderDao.listReportHeader(vicicleHeaderReq);
             result.setData(ListData);
             result.setMessage("Success");
             result.setStatus("00");

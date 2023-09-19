@@ -26,6 +26,10 @@ public class DetailsReq {
     private String STAFF_BIALIENG;
     private String STAFF_BIALIENG_FRIST;
     private String STAFF_BIALINEG_KANGJAIY;
+
+    private String staff02_PayAll;
+    private String staff02_Beforepay;
+    private String staff02_Notpay;
     private String HEADER_ID;
     private String headerNew;
     private String FOOTER_ID;

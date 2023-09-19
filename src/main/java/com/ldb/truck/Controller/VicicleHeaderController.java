@@ -77,6 +77,7 @@ public class VicicleHeaderController {
     @CrossOrigin(origins = "*")
     @PostMapping("/saveVicicleHeaderByID.service")
     public VicicleHeaderRes saveVicicleHeader(@RequestBody VicicleHeaderReq vicicleHeaderReq) {
+        log.info("=================================================>SaveVicicleHeader service<===============================================");
         VicicleHeaderRes result = new VicicleHeaderRes();
         try {
             result = vicicleHeaderService.saveVicicleHeader(vicicleHeaderReq);

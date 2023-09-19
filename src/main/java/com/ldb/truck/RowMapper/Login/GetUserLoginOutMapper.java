@@ -12,8 +12,10 @@ public class GetUserLoginOutMapper implements RowMapper {
         GetUserLoginOut data = new GetUserLoginOut ();
         try {
             data.setRole(rs.getString("ROLE"));
-            data.setStaftId(rs.getString("STAFT_ID"));
-            data.setStaftName(rs.getString("STAFT_NAME"));
+            data.setStaftId(rs.getString("USERID"));
+            data.setStaftName(rs.getString("USER_LOGIN"));
+            data.setStatus(rs.getString("STATUS"));
+            data.setToKen(rs.getString("TOKEN"));
         }catch (Exception e){
             e.printStackTrace();
             return data;

@@ -97,5 +97,6 @@ public class VicicleHeaderReq {
     private String  h_KML_10;
     private String  h_KML_11;
     private String  h_KML_12;
-
+    private String bat_StartDate;
+    private String bat_EndDate;
 }

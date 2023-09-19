@@ -67,19 +67,7 @@ public class PayController {
         return result;
     }
     //---owe
-    @CrossOrigin(origins = "*")
-    @PostMapping("/storePayOwe.service")
-    public PayRes storePayOwe(@RequestBody PayReq payReq){
-        PayRes result =new PayRes();
-        try{
-            result = payService.storePayOwe(payReq);
-            return result;
-        }catch (Exception e){
-            result.setStatus("01");
-            result.setMessage("exeption");
-        }
-        return result;
-    }
+
 //---print bill for payment
 @CrossOrigin(origins = "*")
 @PostMapping("/listBillPaymentByNo.service")

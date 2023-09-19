@@ -21,6 +21,7 @@ public class NotiRes {
     private String notiInvoice;
 
     private String  notiPerForMance;
+    private String payStatus;
 
     private String totalOwe;
 //    private List<NotiDetails> notiDetails;

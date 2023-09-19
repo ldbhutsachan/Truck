@@ -1,6 +1,8 @@
 package com.ldb.truck.Dao.VicicleHeaderDao;
 
 import com.ldb.truck.Model.Login.Report.ReportAllReq;
+import com.ldb.truck.Model.Login.Report.ReportHeader;
+import com.ldb.truck.Model.Login.Report.ReportHeaderReq;
 import com.ldb.truck.Model.Login.VicicleHeader.VicicleHeader;
 import com.ldb.truck.Model.Login.VicicleHeader.VicicleHeaderReq;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +15,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -118,6 +123,9 @@ public class VicicleHeaderServiceDao implements VicicleHeaderDao {
                     tr.setH_KML_10(rs.getString("H_KML_10"));
                     tr.setH_KML_11(rs.getString("H_KML_11"));
                     tr.setH_KML_12(rs.getString("H_KML_12"));
+                    tr.setToBatRowStatus(rs.getString("toBatRow"));
+                    tr.setBat_StartDate(rs.getString("Bat_StartDate"));
+                    tr.setToBatRowStatus(rs.getString("Bat_EndDate"));
 //                    tr.setCh_LH01(rs.getString("Ch_LH01"));
 //                    tr.setCh_LH02(rs.getString("Ch_LH01"));
 //                    tr.setCh_LH03(rs.getString("Ch_LH01"));
@@ -235,6 +243,9 @@ public class VicicleHeaderServiceDao implements VicicleHeaderDao {
                     tr.setH_KML_10(rs.getString("H_KML_10"));
                     tr.setH_KML_11(rs.getString("H_KML_11"));
                     tr.setH_KML_12(rs.getString("H_KML_12"));
+                    tr.setToBatRowStatus(rs.getString("toBatRow"));
+                    tr.setBat_StartDate(rs.getString("Bat_StartDate"));
+                    tr.setToBatRowStatus(rs.getString("Bat_EndDate"));
 //                    tr.setCh_LH01(rs.getString("Ch_LH01"));
 //                    tr.setCh_LH02(rs.getString("Ch_LH01"));
 //                    tr.setCh_LH03(rs.getString("Ch_LH01"));
@@ -256,7 +267,14 @@ public class VicicleHeaderServiceDao implements VicicleHeaderDao {
         return null;
     }
     @Override
-    public int saveVicicleHeader(VicicleHeaderReq vicicleHeaderReq) {
+    public int saveVicicleHeader(VicicleHeaderReq vicicleHeaderReq) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date Bat_StartDate = sdf.parse(vicicleHeaderReq.getBat_StartDate());
+        Date Bat_EndtDate = sdf.parse(vicicleHeaderReq.getBat_EndDate());
+        java.sql.Date sqlStartDate = new java.sql.Date(Bat_StartDate.getTime());
+        java.sql.Date sqlEndDate = new java.sql.Date(Bat_EndtDate.getTime());
+        log.info("sqlStartDate:"+sqlStartDate);
+        log.info("sqlEndDate:"+sqlEndDate);
         List<VicicleHeader> data = new ArrayList<>();
         try{
             String SQL = "insert into TB_HEADER_TRUCK (H_VICIVLE_NUMBER,H_VICIVLE_GALATY,H_VICIVLE_DATE_GALATY,H_VICIVLE_TNGLOD,H_VICIVLE_BRANCH,H_VICIVLE_YEARLEVEL,H_VICIVLE_BRANCHTYPE,H_VICIVLE_DATEEXPRIRE,H_VICIVLE_LEKJUK, \n" +
@@ -287,8 +305,8 @@ public class VicicleHeaderServiceDao implements VicicleHeaderDao {
                     "H_KML_9 ,  \n" +
                     "H_KML_10,  \n" +
                     "H_KML_11,  \n" +
-                    "H_KML_12)\n" +
-                    "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'Y',?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    "H_KML_12,Bat_StartDate,Bat_EndDate)\n" +
+                    "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'Y',?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             List<Object> paramList = new ArrayList<Object>();
             paramList.add(vicicleHeaderReq.getH_VICIVLE_NUMBER());
             paramList.add(vicicleHeaderReq.getH_VICIVLE_GALATY());
@@ -374,6 +392,8 @@ public class VicicleHeaderServiceDao implements VicicleHeaderDao {
             paramList.add(vicicleHeaderReq.getH_KML_10());
             paramList.add(vicicleHeaderReq.getH_KML_11());
             paramList.add(vicicleHeaderReq.getH_KML_12());
+            paramList.add(sqlStartDate);
+            paramList.add(sqlEndDate);
             return EBankJdbcTemplate.update(SQL, paramList.toArray());
         }catch (Exception e){
             e.printStackTrace();
@@ -382,8 +402,15 @@ public class VicicleHeaderServiceDao implements VicicleHeaderDao {
     }
 
     @Override
-    public int updateVicicleHeader(VicicleHeaderReq vicicleHeaderReq) {
-System.out.println("key:"+vicicleHeaderReq.getHis_REASON());
+    public int updateVicicleHeader(VicicleHeaderReq vicicleHeaderReq) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date Bat_StartDate = sdf.parse(vicicleHeaderReq.getBat_StartDate());
+        Date Bat_EndtDate = sdf.parse(vicicleHeaderReq.getBat_EndDate());
+        java.sql.Date sqlStartDate = new java.sql.Date(Bat_StartDate.getTime());
+        java.sql.Date sqlEndDate = new java.sql.Date(Bat_EndtDate.getTime());
+        log.info("sqlStartDate:"+sqlStartDate);
+        log.info("sqlEndDate:"+sqlEndDate);
+        System.out.println("key:"+vicicleHeaderReq.getHis_REASON());
         try {
             String SQL ="update TB_HEADER_TRUCK set H_VICIVLE_NUMBER=?, H_VICIVLE_GALATY=?, H_VICIVLE_DATE_GALATY=?, H_VICIVLE_TNGLOD=?, H_VICIVLE_BRANCH=?, H_VICIVLE_YEARLEVEL=?, \n" +
                     "H_VICIVLE_BRANCHTYPE=?, H_VICIVLE_DATEEXPRIRE=?, H_VICIVLE_LEKJUK=?, H_VICIVLE_LEKTHUNG=?, H_VICIVLE_GPS=?, H_VICIVLE_POYPUDNUMFON=?, \n" +
@@ -432,7 +459,7 @@ System.out.println("key:"+vicicleHeaderReq.getHis_REASON());
                     "H_KML_9 =?,  \n" +
                     "H_KML_10=?,  \n" +
                     "H_KML_11=?,  \n" +
-                    "H_KML_12=? where  key_id=?";
+                    "H_KML_12=?,Bat_StartDate=?,Bat_EndDate=? where  key_id=?";
             System.out.println("sql999:"+SQL);
             List<Object> paramList = new ArrayList<Object>();
             paramList.add(vicicleHeaderReq.getH_VICIVLE_NUMBER());
@@ -523,6 +550,8 @@ System.out.println("key:"+vicicleHeaderReq.getHis_REASON());
             paramList.add(vicicleHeaderReq.getH_KML_10());
             paramList.add(vicicleHeaderReq.getH_KML_11());
             paramList.add(vicicleHeaderReq.getH_KML_12());
+            paramList.add(sqlStartDate);
+            paramList.add(sqlEndDate);
             paramList.add(vicicleHeaderReq.getKey_id());
             return EBankJdbcTemplate.update(SQL, paramList.toArray());
         }catch (Exception e){
@@ -888,6 +917,44 @@ System.out.println("key:"+vicicleHeaderReq.getHis_REASON());
                     return tr;
                 }
             });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<ReportHeader> listReportHeader(ReportHeaderReq reportHeaderReq) {
+        try
+        {
+        String SQL="select a.LAHUD_POYLOD,b.H_VICIVLE_NUMBER,c.F_CARD_NO,b.H_VICIVLE_BRANCH,COUNT(*) totalRow ,\n" +
+                "cast(replace(PRIECENUMNUN, ',', '') as unsigned)*SAINUMMUN AS PRIECENUMNUN,\n" +
+                "FEETOTAL,sum(cast(replace(STAFF_BIALIENG, ',', '') as unsigned)) as STAFF_BIALIENG,\n" +
+                "sum(cast(replace(staff02_payAll, ',', '') as unsigned)) as staff02_payAll\n" +
+                "from TB_DETAILS a \n" +
+                "inner join TB_HEADER_TRUCK b on b.KEY_ID  =a.HEADER_ID\n" +
+                "INNER JOIN TB_FOOTER_TRUCH c ON c.KEY_ID =a.FOOTER_ID \n" +
+                "INNER JOIN TB_PERFORMANCE d ON a.LAHUD_POYLOD=d.PERFORMANCEBILLNO \n" +
+                "join STAFF f on f.KEY_ID = a.STAFF_ID_NUM1\n" +
+                "join STAFF h on h.KEY_ID =a.STAFF_ID_NUM2  " +
+                "where OUT_DATE between '"+reportHeaderReq.getStartDate()+"' and '"+reportHeaderReq.getEndDate()+"'\n" +
+                "group by b.H_VICIVLE_NUMBER,c.F_CARD_NO,b.H_VICIVLE_BRANCH";
+        return EBankJdbcTemplate.query(SQL, new RowMapper<ReportHeader>() {
+            @Override
+            public ReportHeader mapRow(ResultSet rs, int rowNum) throws SQLException {
+                ReportHeader tr =new ReportHeader();
+                tr.setLahudPoyLod(rs.getString("LAHUD_POYLOD"));
+                tr.setVicicalNo(rs.getString("H_VICIVLE_NUMBER"));
+                tr.setFCardNo(rs.getString("F_CARD_NO"));
+                tr.setVicicalBranch(rs.getString("H_VICIVLE_BRANCH"));
+                tr.setTotalRow(rs.getString("totalRow"));
+                tr.setNumMun(rs.getString("PRIECENUMNUN"));
+                tr.setFeeTotal(rs.getString("FEETOTAL"));
+                tr.setBeeLieng(rs.getString("STAFF_BIALIENG"));
+                tr.setBeeLiengAll(rs.getString("staff02_payAll"));
+                return tr;
+            }
+        });
         }catch (Exception e){
             e.printStackTrace();
         }

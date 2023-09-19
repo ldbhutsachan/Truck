@@ -75,8 +75,10 @@ public class PayDao  implements PayInDao{
     @Override
     public int storePayOwe(PayReq payReq) {
         log.info("payReq"+payReq.getBillNo());
+        log.info("NOPAYMENT"+payReq.getNoPayAmount());
         try{
-            SQL= "insert into PAYMENT_HIS (noPayAmount,BILLNO,PAY_DATE,INVOICE_NO,PAYMENT_TYPE,BANKNAME,REF,AMOUNT,PAY_AMOUNT,PAY_STATUS) values (?,?,now(),?,?,?,?,?,?,?)";
+            SQL= "insert into PAYMENT_HIS (NOPAYAMOUNT,BILLNO,PAY_DATE,INVOICE_NO,PAYMENT_TYPE,BANKNAME,REF,AMOUNT,PAY_AMOUNT,PAY_STATUS) values (?,?,now(),?,?,?,?,?,?,?)";
+            log.info("SQL:"+SQL);
             List<Object> paramList = new ArrayList<Object>();
             paramList.add(payReq.getNoPayAmount());
             paramList.add(payReq.getBillNo());
@@ -107,13 +109,18 @@ public class PayDao  implements PayInDao{
     @Override
     public int setPaymentAmoutAndStatus(PayReq payReq) throws ParseException {
         double payAmount = DecimalFormat.getNumberInstance().parse(payReq.getPayAmount()).doubleValue();
+        log.info("payAmount:"+payReq.getPayAmount());
         double amount = DecimalFormat.getNumberInstance().parse(payReq.getAmount()).doubleValue();
+        log.info("amount:"+payReq.getAmount());
         double totalAmount = amount-payAmount;
+        log.info("totalAmount:"+totalAmount);
         try {
             if (totalAmount == 0) {
-                SQL = "update PAYMENT set PAY_STATUS='Y' ,PAY_AMOUNT= PAY_AMOUNT+'"+payAmount+"', PAY_CASH_AMOUNT='"+payAmount+"'  where BILLNO='" + payReq.getBillNo() + "' OR INVOICE_NO='"+payReq.getInvoiceNo()+"'";
+                SQL = "update PAYMENT set PAY_STATUS='Y' ,PAY_AMOUNT= PAY_AMOUNT+CAST(REPLACE('"+payReq.getPayAmount()+"', ',', '') AS DECIMAL(18,2)), PAY_CASH_AMOUNT=CAST(REPLACE('"+payReq.getPayAmount()+"', ',', '') AS DECIMAL(18,2)) where BILLNO='" + payReq.getBillNo() + "' OR INVOICE_NO='"+payReq.getInvoiceNo()+"'";
             } else if (totalAmount != 0) {
-                SQL = "update PAYMENT set PAY_STATUS='N' ,PAY_AMOUNT= PAY_AMOUNT+'"+payAmount+"', PAY_CASH_AMOUNT='"+payAmount+"'  where BILLNO='" + payReq.getBillNo() + "' OR INVOICE_NO='"+payReq.getInvoiceNo()+"'";
+                SQL = "update PAYMENT set PAY_STATUS='N' ,PAY_AMOUNT= PAY_AMOUNT+CAST(REPLACE('"+payReq.getPayAmount()+"', ',', '') AS DECIMAL(18,2)), PAY_CASH_AMOUNT=CAST(REPLACE('"+payReq.getPayAmount()+"', ',', '') AS DECIMAL(18,2)) where BILLNO='" + payReq.getBillNo() + "' OR INVOICE_NO='"+payReq.getInvoiceNo()+"'";
+
+               // SQL = "update PAYMENT set PAY_STATUS='N' ,PAY_AMOUNT= PAY_AMOUNT+'"+payReq.getPayAmount()+"', PAY_CASH_AMOUNT='"+payReq.getPayAmount()+"'  where BILLNO='" + payReq.getBillNo() + "' OR INVOICE_NO='"+payReq.getInvoiceNo()+"'";
 
               //  SQL = "update PAYMENT set PAY_STATUS='N' ,PAY_AMOUNT=cast(replace(PAY_AMOUNT, ',', '') as unsigned)+cast(replace("+payAmount+", ',', '') as unsigned), PAY_CASH_AMOUNT='"+payAmount+"'  where BILLNO='" + payReq.getBillNo() + "' OR INVOICE_NO='"+payReq.getInvoiceNo()+"'";
                 // SQL = "update PAYMENT set PAY_AMOUNT=(TO_NUMBER(PAY_AMOUNT, '99999999999999.99')+(" +payAmount+ ")),PAY_CASH_AMOUNT='"+payAmount+"'  where BILLNO='" + payReq.getBillNo() + "' OR  INVOICE_NO='"+payReq.getInvoiceNo()+"'";

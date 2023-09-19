@@ -1,9 +1,12 @@
 package com.ldb.truck.Service.staft;
 
 import com.ldb.truck.Dao.Customer.ImpCustomerDao;
-import com.ldb.truck.Model.Login.staft.stafReq;
-import com.ldb.truck.Model.Login.staft.staftOut;
-import com.ldb.truck.Model.Login.staft.staftRes;
+import com.ldb.truck.Model.Login.ReportStaff.ReportStaff;
+import com.ldb.truck.Model.Login.ReportStaff.ReportStaffReq;
+import com.ldb.truck.Model.Login.ReportStaff.ReportStaffRes;
+import com.ldb.truck.Model.Login.ReportStaff.Staff;
+import com.ldb.truck.Model.Login.ResFromDateReq;
+import com.ldb.truck.Model.Login.staft.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -167,4 +170,99 @@ public class StaftService {
             return result;
         }
     }
+    //-------wait pay staff
+    public ReportStaffRes ListWaiyPaymentStaff(){
+        List<ReportStaff> listdata = new ArrayList<>();
+        ReportStaffRes result = new ReportStaffRes();
+        try{
+            listdata = impCustomerDao.ListWaiyPaymentStaff();
+            result.setData(listdata);
+            result.setStatus("00");
+            result.setMessage("success");
+        }catch (Exception e){
+            e.printStackTrace();
+            result.setStatus("01");
+            result.setMessage("data not found");
+        }
+        return result;
+    }
+    //=======payment staff========================
+    public ReportStaffRes paymentStaff(StaffPaymentReq staffPaymentReq){
+        List<ReportStaff> listdata = new ArrayList<>();
+        ReportStaffRes result = new ReportStaffRes();
+        int checkData= 0;
+        int checkData01= 0;
+        try{
+            checkData01=impCustomerDao.paymentStaffUpdate(staffPaymentReq);
+            checkData = impCustomerDao.paymentStaff(staffPaymentReq);
+            if(checkData == 0 && checkData01==0){
+                result.setStatus("01");
+                result.setMessage("can't save data");
+                return result;
+            }else
+            {
+                result.setStatus("00");
+                result.setMessage("save data done ");
+                return result;
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            result.setStatus("01");
+            result.setMessage("data not found");
+        }
+        return result;
+    }
+    //-----report sum staff
+    public ReportStaffRes ReportStaffPeymnet(ResFromDateReq resFromDateReq){
+        List<ReportStaff> listdata = new ArrayList<>();
+        ReportStaffRes result = new ReportStaffRes();
+        List<Staff> liststaff = new ArrayList<>();
+
+        try{
+            listdata = impCustomerDao.ReportStaffPeymnet(resFromDateReq);
+            result.setData(listdata);
+            result.setStatus("00");
+            result.setMessage("success");
+        }catch (Exception e){
+            e.printStackTrace();
+            result.setStatus("01");
+            result.setMessage("data not found");
+        }
+        return result;
+    }
+    //================================>ListStaffPay<============================================
+    public StaffPayRes ReportListStaffPay(StaffPayReq staffPayReq){
+        List<StaffPay> listdata = new ArrayList<>();
+        StaffPayRes result = new StaffPayRes();
+        List<Staff> liststaff = new ArrayList<>();
+        try{
+            listdata = impCustomerDao.ListStaffPay(staffPayReq);
+            result.setData(listdata);
+            result.setStatus("00");
+            result.setMessage("success");
+        }catch (Exception e){
+            e.printStackTrace();
+            result.setStatus("01");
+            result.setMessage("data not found");
+        }
+        return result;
+    }
+    //========================================>ListStaffPaydetailsByStaffId<=============================
+    public ReportStaffRes ListWaiyPaymentStaffByID(StaffPayReq staffPayReq){
+        List<ReportStaff> listdata = new ArrayList<>();
+        ReportStaffRes result = new ReportStaffRes();
+        try{
+            listdata = impCustomerDao.ListStaffPaydetailsByStaffId(staffPayReq);
+            result.setData(listdata);
+            result.setStatus("00");
+            result.setMessage("success");
+        }catch (Exception e){
+            e.printStackTrace();
+            result.setStatus("01");
+            result.setMessage("data not found");
+        }
+        return result;
+    }
+
 }

@@ -1,13 +1,15 @@
 package com.ldb.truck.Dao.Customer;
 
+import com.ldb.truck.Model.Login.ReportStaff.ReportStaff;
+import com.ldb.truck.Model.Login.ReportStaff.ReportStaffReq;
+import com.ldb.truck.Model.Login.ResFromDateReq;
 import com.ldb.truck.Model.Login.customer.CustomerOut;
 import com.ldb.truck.Model.Login.customer.CustomerReq;
 import com.ldb.truck.Model.Login.location.LocationOut;
 import com.ldb.truck.Model.Login.location.LocationReq;
 import com.ldb.truck.Model.Login.product.ProductOut;
 import com.ldb.truck.Model.Login.product.ProductReq;
-import com.ldb.truck.Model.Login.staft.stafReq;
-import com.ldb.truck.Model.Login.staft.staftOut;
+import com.ldb.truck.Model.Login.staft.*;
 import com.ldb.truck.RowMapper.Location.LocationOutMapper;
 import com.ldb.truck.RowMapper.Product.ProductMapper;
 import com.ldb.truck.RowMapper.customer.getAllcustomerMapper;
@@ -15,11 +17,19 @@ import com.ldb.truck.RowMapper.staftMapper.getAllStaftMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Repository
@@ -28,6 +38,215 @@ public class ImpCustomerDao  implements CustomerDao{
     @Autowired
     @Qualifier("EBankJdbcTemplate")
     private JdbcTemplate EBankJdbcTemplate;
+
+    @Override
+    public List<StaffPay> ListStaffPay(StaffPayReq staffPayReq) {
+        try{
+            String SQL="SELECT \n" +
+                    "STAFT_ID,STAFT_NAME,STAFT_SURNAME,COUNT(*) AS TOTALROW, \n" +
+                    " cast(replace(STAFF_BIALIENG, ',', '') as unsigned)+ cast(replace(staff02_payAll, ',', '') as unsigned) AS staff02_payAll,\n" +
+                    " cast(replace(STAFF_BIALIENG_FRIST, ',', '') as unsigned)+ cast(replace(staff02_beforepay, ',', '') as unsigned) AS staff02_beforepay,\n" +
+                    " cast(replace(STAFF_BIALINEG_KANGJAIY, ',', '') as unsigned)+ cast(replace(staff02_notpay, ',', '') as unsigned) AS staff02_notpay\n" +
+                    "FROM CEHCK_PAY_STATFF where OUT_DATE between '"+staffPayReq.getStartDate()+"' and '"+staffPayReq.getEndDate()+"'\n" +
+                    "GROUP BY STAFT_ID,STAFT_NAME,STAFT_SURNAME ORDER BY OUT_DATE  ASC";
+            return EBankJdbcTemplate.query(SQL, new RowMapper<StaffPay>() {
+                @Override
+                public StaffPay mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    StaffPay tr = new StaffPay();
+                    tr.setStaffID(rs.getString("STAFT_ID"));
+                    tr.setStaffName(rs.getString("STAFT_NAME"));
+                    tr.setStaffSurname(rs.getString("STAFT_SURNAME"));
+                    tr.setStaff02_PayAll(rs.getString("staff02_payAll"));
+                    tr.setStaff02_Beforepay(rs.getString("staff02_beforepay"));
+                    tr.setStaff02_Notpay(rs.getString("staff02_notpay"));
+                    tr.setTotalRow(rs.getString("TOTALROW"));
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<ReportStaff> ListStaffPaydetailsByStaffId(StaffPayReq staffPayReq) {
+        try
+        {
+            String sql="select * from CEHCK_PAY_STATFF where  STAFT_ID='"+staffPayReq.getStaffID()+"' OR  LAHUD_POYLOD ='"+staffPayReq.getLahudPoyLod()+"'  order by OUT_DATE asc";
+            return  EBankJdbcTemplate.query(sql, new RowMapper<ReportStaff>() {
+                @Override
+                public ReportStaff mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    ReportStaff tr =new ReportStaff();
+                    tr.setSTAFT_ID(rs.getString("STAFT_ID"));
+                    tr.setSTAFT_NAME(rs.getString("STAFT_NAME"));
+                    tr.setSTAFT_ID02(rs.getString("STAFT_ID02"));
+                    tr.setSTAFT_NAME02(rs.getString("STAFT_NAME02"));
+                    tr.setSTAFT_SURNAME(rs.getString("STAFT_SURNAME"));
+                    tr.setH_VICIVLE_NUMBER(rs.getString("H_VICIVLE_NUMBER"));
+                    tr.setH_VICIVLE_BRANCHTYPE(rs.getString("H_VICIVLE_BRANCHTYPE"));
+                    tr.setF_BRANCH (rs.getString("F_BRANCH"));
+                    tr.setF_CAR_TYPE(rs.getString("F_CAR_TYPE"));
+                    tr.setPROVINCE(rs.getString("PROVINCE"));
+                    tr.setDETAIL(rs.getString("DETAIL"));
+                    tr.setOUT_DATE(rs.getString("OUT_DATE"));
+                    tr.setIN_DATE(rs.getString("IN_DATE"));
+                    tr.setSTAFF_BIALIENG(rs.getString("STAFF_BIALIENG"));
+                    tr.setSTAFF_BIALIENG_FRIST(rs.getString("STAFF_BIALIENG_FRIST"));
+                    tr.setSTAFF_BIALINEG_KANGJAIY(rs.getString("STAFF_BIALINEG_KANGJAIY"));
+                    tr.setCurrency(rs.getString("CURRENCY"));
+                    tr.setStaff_Cur(rs.getString("STAFF_BIALIENG_CUR"));
+                    tr.setStaffPaystatus01(rs.getString("staff_01_status"));
+                    tr.setStaffPaystatus02(rs.getString("staff_02_status"));
+                    tr.setLahudPoyLod(rs.getString("LAHUD_POYLOD"));
+                    tr.setTotalDay(rs.getString("totalDay"));
+//                    tr.setBatStartDate(rs.getString(""));
+//                    tr.setBatEndDate(rs.getString(""));
+
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<ReportStaff> ListWaiyPaymentStaff() {
+        try
+        {
+            String sql="select * from CEHCK_PAY_STATFF where staff_01_status='not-pay' or staff_01_status='not-pay' order by OUT_DATE asc";
+            return  EBankJdbcTemplate.query(sql, new RowMapper<ReportStaff>() {
+                @Override
+                public ReportStaff mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    ReportStaff tr =new ReportStaff();
+                    tr.setSTAFT_ID(rs.getString("STAFT_ID"));
+                    tr.setSTAFT_NAME(rs.getString("STAFT_NAME"));
+                    tr.setSTAFT_ID02(rs.getString("STAFT_ID02"));
+                    tr.setSTAFT_NAME02(rs.getString("STAFT_NAME02"));
+                    tr.setSTAFT_SURNAME(rs.getString("STAFT_SURNAME"));
+                    tr.setH_VICIVLE_NUMBER(rs.getString("H_VICIVLE_NUMBER"));
+                    tr.setH_VICIVLE_BRANCHTYPE(rs.getString("H_VICIVLE_BRANCHTYPE"));
+                    tr.setF_BRANCH (rs.getString("F_BRANCH"));
+                    tr.setF_CAR_TYPE(rs.getString("F_CAR_TYPE"));
+                    tr.setPROVINCE(rs.getString("PROVINCE"));
+                    tr.setDETAIL(rs.getString("DETAIL"));
+                    tr.setOUT_DATE(rs.getString("OUT_DATE"));
+                    tr.setIN_DATE(rs.getString("IN_DATE"));
+                    tr.setSTAFF_BIALIENG(rs.getString("STAFF_BIALIENG"));
+                    tr.setSTAFF_BIALIENG_FRIST(rs.getString("STAFF_BIALIENG_FRIST"));
+                    tr.setSTAFF_BIALINEG_KANGJAIY(rs.getString("STAFF_BIALINEG_KANGJAIY"));
+                    tr.setCurrency(rs.getString("CURRENCY"));
+                    tr.setStaff_Cur(rs.getString("STAFF_BIALIENG_CUR"));
+                    tr.setStaffPaystatus01(rs.getString("staff_01_status"));
+                    tr.setStaffPaystatus02(rs.getString("staff_02_status"));
+                    tr.setLahudPoyLod(rs.getString("LAHUD_POYLOD"));
+                    tr.setTotalDay(rs.getString("totalDay"));
+//                    tr.setBatStartDate(rs.getString(""));
+//                    tr.setBatEndDate(rs.getString(""));
+
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Override
+    public List<ReportStaff> ReportStaffPeymnet(ResFromDateReq resFromDateReq) {
+        try
+        {
+            String sql="select * from CEHCK_PAY_STATFF where OUT_DATE='"+resFromDateReq.getStartDate()+"' and OUT_DATE='"+resFromDateReq.getStartDate()+"'  order by OUT_DATE asc";
+            return  EBankJdbcTemplate.query(sql, new RowMapper<ReportStaff>() {
+                @Override
+                public ReportStaff mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    ReportStaff tr =new ReportStaff();
+                    tr.setSTAFT_ID(rs.getString("STAFT_ID"));
+                    tr.setSTAFT_NAME(rs.getString("STAFT_NAME"));
+                    tr.setSTAFT_ID02(rs.getString("STAFT_ID02"));
+                    tr.setSTAFT_NAME02(rs.getString("STAFT_NAME02"));
+                    tr.setSTAFT_SURNAME(rs.getString("STAFT_SURNAME"));
+                    tr.setH_VICIVLE_NUMBER(rs.getString("H_VICIVLE_NUMBER"));
+                    tr.setH_VICIVLE_BRANCHTYPE(rs.getString("H_VICIVLE_BRANCHTYPE"));
+                    tr.setF_BRANCH (rs.getString("F_BRANCH"));
+                    tr.setF_CAR_TYPE(rs.getString("F_CAR_TYPE"));
+                    tr.setPROVINCE(rs.getString("PROVINCE"));
+                    tr.setDETAIL(rs.getString("DETAIL"));
+                    tr.setOUT_DATE(rs.getString("OUT_DATE"));
+                    tr.setIN_DATE(rs.getString("IN_DATE"));
+                    tr.setSTAFF_BIALIENG(rs.getString("STAFF_BIALIENG"));
+                    tr.setSTAFF_BIALIENG_FRIST(rs.getString("STAFF_BIALIENG_FRIST"));
+                    tr.setSTAFF_BIALINEG_KANGJAIY(rs.getString("STAFF_BIALINEG_KANGJAIY"));
+                    tr.setCurrency(rs.getString("CURRENCY"));
+                    tr.setStaff_Cur(rs.getString("STAFF_BIALIENG_CUR"));
+                    tr.setStaffPaystatus01(rs.getString("staff_01_status"));
+                    tr.setStaffPaystatus02(rs.getString("staff_02_status"));
+                    return tr;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public int paymentStaff(StaffPaymentReq staffPaymentReq) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(staffPaymentReq.getPayDate());
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        try{
+            String SQL="insert into PAYMENT_STAFF (PAY_DATE,staffID01,staffID02,payAmount_NotPay01,payAmount_NotPay02,payAmount_Pay01,payAmount_Pay02," +
+                    "payAmount_TotalPay01,payAmount_TotalPay02,payAmount_status01,payAmount_status02) values (?,?,?,?,?,?,?,?,?,?,?)";
+            List<Object> paramList = new ArrayList<Object>();
+            paramList.add(sqlDate);
+            paramList.add(staffPaymentReq.getStaffID01());
+            paramList.add(staffPaymentReq.getStaffID02());
+            paramList.add(staffPaymentReq.getPayAmount_NotPay01());
+            paramList.add(staffPaymentReq.getPayAmount_NotPay02());
+            paramList.add(staffPaymentReq.getPayAmount_Pay01());
+            paramList.add(staffPaymentReq.getPayAmount_Pay02());
+            paramList.add(staffPaymentReq.getPayAmount_TotalPay01());
+            paramList.add(staffPaymentReq.getPayAmount_TotalPay02());
+            paramList.add(staffPaymentReq.getPayAmount_status01());
+            paramList.add(staffPaymentReq.getPayAmount_status02());
+            return EBankJdbcTemplate.update(SQL,paramList.toArray());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    @Override
+    public int paymentStaffUpdate(StaffPaymentReq staffPaymentReq) throws ParseException {
+        System.out.println("staffPaymentReq 01:"+staffPaymentReq.getStaffID01());
+        System.out.println("staffPaymentReq 02:"+staffPaymentReq.getStaffID02());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(staffPaymentReq.getPayDate());
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        try{
+            String SQL="update TB_DETAILS set staff_01_status='"+staffPaymentReq.getPayAmount_status01()+"',staff_02_status='"+staffPaymentReq.getPayAmount_status02()+"' where STAFF_ID_NUM1='"+staffPaymentReq.getStaffID01()+"' AND STAFF_ID_NUM2='"+staffPaymentReq.getStaffID02()+"'";
+            System.out.println("SQL:"+SQL);
+            List<Object> paramList = new ArrayList<Object>();
+            paramList.add(sqlDate);
+            paramList.add(staffPaymentReq.getStaffID01());
+            paramList.add(staffPaymentReq.getStaffID02());
+            paramList.add(staffPaymentReq.getPayAmount_NotPay01());
+            paramList.add(staffPaymentReq.getPayAmount_NotPay02());
+            paramList.add(staffPaymentReq.getPayAmount_Pay01());
+            paramList.add(staffPaymentReq.getPayAmount_Pay02());
+            paramList.add(staffPaymentReq.getPayAmount_TotalPay01());
+            paramList.add(staffPaymentReq.getPayAmount_TotalPay02());
+            paramList.add(staffPaymentReq.getPayAmount_status01());
+            paramList.add(staffPaymentReq.getPayAmount_status02());
+            return EBankJdbcTemplate.update(SQL,paramList.toArray());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     @Override
     public List<CustomerOut> getAllCustomer() {
         List<CustomerOut> result = new ArrayList<>();

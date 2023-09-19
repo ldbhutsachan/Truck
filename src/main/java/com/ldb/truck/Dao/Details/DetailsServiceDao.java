@@ -185,7 +185,7 @@ public class DetailsServiceDao implements  DetailsDao {
                     "NUMNUKLOD=?,  \n" +
                     "KONGNARLOD=?,  \n" +
                     "KHG_MUE_TIDLOD=?,PRICE=?,TOTAL_PRICE=?,PRIECENUMNUN=?  \n" +
-                    "KIM_KILO=? where key_id=?";
+                    "KIM_KILO=?,staff02_payAll=?,staff02_beforepay=?,staff02_notpay=? where key_id=?";
             List<Object> paramList = new ArrayList<Object>();
             paramList.add(detailsReq.getLaHud_poyLod());
             paramList.add(detailsReq.getCUSTOMER_ID());
@@ -215,6 +215,9 @@ public class DetailsServiceDao implements  DetailsDao {
             paramList.add(detailsReq.getPrice());
             paramList.add(detailsReq.getTotalPrice());
             paramList.add(detailsReq.getPriceNamMun());
+            paramList.add(detailsReq.getStaff02_PayAll());
+            paramList.add(detailsReq.getStaff02_Beforepay());
+            paramList.add(detailsReq.getStaff02_Notpay());
             paramList.add(detailsReq.getKEY_ID());
             return EBankJdbcTemplate.update(sql, paramList.toArray());
         }catch (Exception e ){
@@ -260,7 +263,9 @@ public class DetailsServiceDao implements  DetailsDao {
                      "NUMNUKLOD,  \n" +
                      "KONGNARLOD,  \n" +
                      "KHG_MUE_TIDLOD,  \n" +
-                     "KIM_KILO,DETAILS_DATE,PRICE,TOTAL_PRICE,d_status,PRIECENUMNUN,CURRENCY,STAFF_BIALIENG_CUR,CREATE_DATE,CREATE_BY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),?,?,'N',?,?,?,now(),?)  ";
+                     "KIM_KILO,DETAILS_DATE," +
+                     "PRICE,TOTAL_PRICE,d_status,PRIECENUMNUN,CURRENCY,STAFF_BIALIENG_CUR,CREATE_DATE,CREATE_BY,staff_01_status,staff_02_status,staff02_payAll,staff02_beforepay,staff02_notpay) " +
+                     "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,now(),?,?,'N',?,?,?,now(),?,'not-pay','not-pay',?,?,?)  ";
              log.info("SQL:"+sql);
             List<Object> paramList = new ArrayList<Object>();
           //  paramList.add(detailsReq.getKEY_ID());
@@ -295,6 +300,9 @@ public class DetailsServiceDao implements  DetailsDao {
             paramList.add(detailsReq.getCurrency());
             paramList.add(detailsReq.getStaff_Curr());
             paramList.add(detailsReq.getCreate_By());
+            paramList.add(detailsReq.getStaff02_PayAll());
+            paramList.add(detailsReq.getStaff02_Beforepay());
+            paramList.add(detailsReq.getStaff02_Notpay());
           //  paramList.add(detailsReq.getDETAILS_DATE());
             return EBankJdbcTemplate.update(sql, paramList.toArray());
         }catch (Exception e ){
@@ -302,7 +310,6 @@ public class DetailsServiceDao implements  DetailsDao {
             return -1;
         }
     }
-
     @Override
     public int UpdateHeader(DetailsReq detailsReq) {
         System.out.println("hh:"+detailsReq.getHEADER_ID());

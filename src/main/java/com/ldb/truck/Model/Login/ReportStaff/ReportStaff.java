@@ -12,6 +12,8 @@ import lombok.Setter;
 public class ReportStaff {
     private String sTAFT_ID;
     private String sTAFT_NAME ;
+    private String sTAFT_ID02;
+    private String sTAFT_NAME02;
     private String sTAFT_SURNAME ;
     private String h_VICIVLE_NUMBER  ;
     private String h_VICIVLE_BRANCHTYPE ;
@@ -24,9 +26,14 @@ public class ReportStaff {
     private String sTAFF_BIALINEG_KANGJAIY;
     private String pROVINCE;
     private String dETAIL;
-
     private String currency;
     private String staff_Cur;
+    private String staffPaystatus01;
+    private String staffPaystatus02;
+    private String lahudPoyLod;
+    private String totalDay;
+//    private String batStartDate;
+//    private String batEndDate;
 
 
 }

@@ -349,6 +349,7 @@ public class Controller {
     public GetUserLoginRes Login (@RequestBody  LoginReq loginReq){
         GetUserLoginRes result = new GetUserLoginRes();
         try {
+            System.out.println("============================>login service<============================================");
             result = loginService.Userlogin(loginReq);
         }catch (Exception e){
             e.printStackTrace();

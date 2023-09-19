@@ -1,6 +1,6 @@
 package com.ldb.truck.Controller;
 
-import com.ldb.truck.Model.Login.Report.ReportAllRes;
+import com.ldb.truck.Model.Login.Report.*;
 import com.ldb.truck.Model.Login.ReportStaff.ReportStaffReq;
 import com.ldb.truck.Model.Login.ReportStaff.ReportStaffRes;
 import com.ldb.truck.Service.ReportAllService.ReportAllService;
@@ -11,8 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.ldb.truck.Model.Login.Report.ReportAll;
-import com.ldb.truck.Model.Login.Report.ReportAllReq;
+
 import javax.swing.plaf.PanelUI;
 
 import com.ldb.truck.Model.Login.VicicleHeader.VicicleHeaderRes;
@@ -91,6 +90,21 @@ public class ReportAllFull {
             }
         return  result;
     }
+    //----listReportHeader
+    @CrossOrigin(origins = "*")
+    @PostMapping("/listReportHeaderPay.service")
+    public ReportHeaderRes listReportHeaderPay(@RequestBody ReportHeaderReq reportHeaderReq){
+        ReportHeaderRes result = new ReportHeaderRes();
+        try {
+            result  = vicicleHeaderService.listReportHeader(reportHeaderReq);
+        }catch (Exception e ){
+            result.setStatus("01");
+            result.setMessage("exeption");
+            return result;
+        }
+        return  result;
+    }
+
     //---Report footer
     @CrossOrigin(origins = "*")
     @PostMapping("/ReportFooter.service")
